@@ -1,8 +1,8 @@
 Package: cowspeak
-Version: 1.2
+Version: 1.4
 Section: misc
 Priority: optional
 Architecture: all
-Depends: ruby
+Depends: ruby, ncurses-base, ncurses-bin
 Maintainer: Sourav Goswami <souravgoswami@protonmail.com>
 Description: Display an animal with a random quote or your own text.
