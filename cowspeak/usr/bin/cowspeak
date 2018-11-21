@@ -2,236 +2,166 @@
 # Written by Sourav Goswami
 # The GNU General Public License v3.0
 
-help = ->{
-puts <<EOF
-Hi, my name is cowspeak. I speak a quote on your terminal.
+require 'io/console'
 
-Usage: Run me from the command line without any arguments, and I will show you a fortune.
+Help = -> {
+	puts <<EOF
+Help:
+	Hi, my name is font generator, also known as fgen.
+	I am a funny, little program who generates a font of your choice on your terminal!
 
-Pass me some arguments:
-	Available arguments are:
-	--art or -a                     Display a tutorial on adding your own art.
-	--blink or -b			Blink the texts (not supported in all terminals yet).
-	--documentation or -d           Display the whole documentation including this help.
-	--file= or -f=			Specify the ASCII file path to display your own ASCII art.
-	--fortune			Show a fortune without any art.
-	--help or -h                    Display this help.
-	--manual or -m                  Display a manual. Same as documentation.
-	--read or -r=                   Read a file.
-	--text= or -t=                  Display a custom text.
-	--update or -u                  Update fortune database from Github.
+	Usage:
+		1. When you run me, I will ask you to choose a font style template.
+		2. Select a template of your choice, and then start typing, I will show you what you
+		   typed in your style.
+		3. When done, press escape key or ctrl + c or ctrl + k to quit me.
+		4. You can also pass arguments to me, I will show them but you need to confirm the style.
+			Example:
+				./#{__FILE__} This is just a sample text!!
 
-This is the help page, for more help with examples, run #{__FILE__} --documentation or #{__FILE__} -d
+		I will handle the arguments (fgen <your texts>). I will also ask you for a style.
+
+		Available Arguments:
+			--help				this help
+			--blink				blink the text typed
+			--colour			show a random coloured text
+
+		Keys to navigate around and control the texts:
+			backspace		delete the character before the cursor
+			ctrl + w			go up from the cursor
+			ctrl + s			go down from the cursor
+			ctrl + a			go to the left from the cursor
+			ctrl + d			go to the right from the cursor
+			ctrl + space			delete the character under the cursor from the cursor
+			ctrl + r			clear the input
+			ctrl + l			clear the input
+			ctrl + k			exit prompt
+			ctrl + c			exit prompt
+
+		Suggestion: This program uses UTF-8 fonts, and can be copied to use them on the web (if supported).
 EOF
-exit! 0
+	exit! 0
 }
 
-exception_handle = ->(error) {
-	puts "Uh oh! Sorry, #{__FILE__} Crashed."
-	print "Select one of the following:
-		1. Exit.
-		2. Show the usage (#{__FILE__} -h)
-		3. Show Error Details.
-		4. Save Error Details to a Log File.
-		- Default: 1 (Exit).
-		-> Choose: "
-
-	case STDIN.gets.to_i
-		when 1 then exit!
-		when 2 then help.call
-		when 3 then puts error ; exit! 125
-		when 4 then
-			File.open('/tmp/cowspeak-log.txt', 'a+') do |log_file|
-				log_file.puts("\n#{Time.new.strftime('Error on %D at %T')} => \n\t#{error}")
-				puts 'The error has been written to /tmp/cowspeak-log.txt'
-			end
-			exit! 126
-		else exit!
+def check_args
+	if ARGV.include?('--help')
+		Help.call
+		ARGV.delete('--help')
 	end
-}
 
-if ARGV.include?('--blink') or ARGV.include?('-b')
-	puts "\033[5m"
-	at_exit do puts "\033[0m" end
+	if ARGV.include?('--blink')
+		@blink = true
+		ARGV.delete('--blink')
+	else
+		@blink = false
+	end
+
+	if ARGV.include?('--colour') then
+		@coloured = true
+		ARGV.delete('--colour')
+	else
+		@coloured = false
+	end
+
+	main
 end
 
-if ARGV.include?('--documentation') or ARGV.include?('-d') or ARGV.include?('--manual') or ARGV.include?('-m')
-puts <<EOF
-Hi, my name is cowspeak. I speak a quote on your terminal.
+at_exit { puts "\033[0m" }
 
-Usage: Run me from the command line without any arguments, and I will show you a fortune.
-
-Pass me some arguments:
-	Available arguments are:
-	--art or -a                     Display a tutorial on adding your own art.
-	--blink or -b			Blink the texts (not supported in all terminals yet).
-	--documentation or -d           Display the whole documentation including this help.
-	--file= or -f=			Specify the ASCII file path to display your own ASCII art.
-	--fortune			Show a fortune without any art.
-	--help or -h                    Display this help.
-	--manual or -m                  Display a manual. Same as documentation.
-	--read or -r=                   Read a file.
-	--text= or -t=                  Display a custom text.
-	--update or -u                  Update fortune database from Github.
-
-		Examples:
-			For custom text:
-				cowspeak --text='text' / #{__FILE__} -t='text'
-
-			To display your own ASCII art:
-				#{__FILE__} --file='path/file.art'
-
-			To display your own art with your text:
-				#{__FILE__} --file=directory/file.art --text='your text'
-
-			To read a file from the storage:
-				#{__FILE__} --read='path/file.extension' or #{__FILE__} -r='path/file.extension'
-
-			NOTE: --text with --read or -t with -r will not read the file, but show the custom text.
-					Here's the priority of them, the higher the priority, the higher chances they are considered.
-
-						Priority 1: text
-						Priority 2: read
-	Help:
-		#{__FILE__} -h or --help for the help message.
-		#{__FILE__} --documentation or #{__FILE__} -d for this documentation.
-
-	Creating Custom Art:
-		You can make your own art. Run #{__FILE__} --art or #{__FILE__} -a for more information.
-
-	Update Fortune Database:
-		This is just an extra feature. Update synchronizes your fortunes.data with https://raw.githubusercontent.com/bmc/fortunes/master/fortunes.
-		You need not to update the database for months. It's fine if you never update the database. There are many fun inside the provided database.
-		However, if the database gets deleted, run #{__FILE__} --update or #{__FILE__} -u. You can occasionally run an update - won't harm anything.
-EOF
-exit! 0
-end
-
-if ARGV.include?('--art') or ARGV.include?('-a')
-puts <<EOF
-You can create your own art. Here's a short introduction on how to do that:
-	1. Create an empty document in your computer with 'art' extension (myart.art).
-	2. Edit the document and Type your name in the first line. If you copy someone's work, provide the artist's name.
-		For example:
-			\033[5mCreated by #{('aaa'..'zzz').to_a.sample}man.\033[0m
-	3. Leave one more empty line after your name.
-	4. Type your characters and draw your ASCII art.
-		Format: What you've done should looks like this:
-
-\033[4mLine Number\033[0m			\033[4mArt\033[0m
-
-\033[7;34m1\033[0m			\033[5mThanks to #{('aaaa'..'zzzz').to_a.sample} for this art\033[0m
-\033[7;34m2\033[0m
-\033[7;34m3\033[0m 			\033[5m-------------------------\033[0m
-\033[7;34m4\033[0m 			\033[5m=			=\033[0m
-\033[7;34m5\033[0m 			\033[5m=    Your ASCII Art	=\033[0m
-\033[7;34m6\033[0m 			\033[5m=			=\033[0m
-\033[7;34m7\033[0m 			\033[5m-------------------------\033[0m
-
-	- You can copy and paste other's arts, just follow the above rules.
-	- For more examples, look at other files.
-	- You can use other files. By default they are located in /usr/share/cowspeak/arts/
-	- To use your custom art, just run #{__FILE__} --file='your_art.art'
-	- If it's located in another directory then #{__FILE__} --file='directory/your_art.art'
-EOF
-exit! 0
-end
-
-help.call if ARGV.include?('--help') or ARGV.include?('-h')
-if ARGV.include?('--update') or ARGV.include?('-u')
+def main
 	begin
-		require 'net/http'
-		file = File.open('/usr/share/cowspeak/fortunes.data', 'w')
-			data = Net::HTTP.get(URI('https://raw.githubusercontent.com/bmc/fortunes/master/fortunes')).chomp
-			unless data.include?('404: Not Found')
-				file.puts(data)
-				file.close
-				puts "The fortunes have been updated."
-				exit! 0
-			else
-				puts "Sorry for the inconvenience. The site doesn't seem to be valid anymore."
-				puts "If the problem persists, contact: souravgoswami@protonmail.com."
-				puts "#{__FILE__} can get an update. For the time being, stick with the current database you have, please..."
-				file.close
-				exit! 100
-			end
+		gen = ->(font, ch) {
+					('a'..'z').each do |c|
+						return font if c == ch
+						font = font.succ
+					end
+		}
 
-	rescue SocketError
-		puts 'Do you have an internet connection?'
-		puts "1. Exit.\n2. Retry.\nDefault: 1 (Exit)."
+		fonts = ["\x61\x00", "\xf0\x9d\x93\xaa" ,"\xf0\x9d\x90\x9a", "\xf0\x9d\x9a\x8a", "\xf0\x9d\x96\xba",
+				"\x61\xcc\xbd\xcd\x90", "\x61\xcc\xbd\xcd\x91", "\x61\xcc\xbd\xcd\x92",
+				"\x61\xcc\xbd\xcd\x93", "\x61\xcc\xbd\xcd\x94", "\x61\xcc\xbd\xcd\x95",
+				"\x61\xcc\xbd\xcd\x96", "\x61\xcc\xbd\xcd\x97", "\x61\xcc\xbd\xcd\x98",
+				"\x61\xcc\xbd\xcd\x99", "\xf0\x9f\x85\x90", "\xf0\x9f\x85\xb0", "\xf0\x9f\x84\xb0",
+				"\xf0\x9d\x94\x9e", "\xf0\x9d\x96\x86", "\x61\xcd\x80", "\x61\xcd\x81", "\x61\xcd\x82",
+				"\x61\xcd\x83", "\x61\xcd\x84", "\x61\xcd\x85", "\x61\xcd\x86", "\x61\xcd\x87", "\x61\xcd\x88",
+				"\x61\xcd\x89", "\x61\xcc\xba", "\x61\xcc\xbb", "\x61\xcc\xbc", "\x61\xcc\xbd", "\x61\xcc\xbe",
+				"\x61\xcc\xbf", "\x61\xcc\x9f", "\xf0\x9d\x95\x92", "\x61\xd2\x89", "\x61\xcc\xb0",
+				"\x61\xcc\xb1", "\x61\xcc\xb2", "\x61\xcc\xb3", "\x61\xcc\xb4",
+				"\x61\xcc\xb5", "\x61\xcc\xb6", "\x61\xcc\xb7", "\x61\xcc\xb8", "\x61\xcc\xb9" ]
+
+
+		print "\033[0m"
+		puts "The Available Styles are:\n\n"
+		fonts.size.times do |count| print "\t#{count + 1} "
+			('a'..'z').map do |c| print gen.call(fonts[count], c) end
+			puts
+		end
+		puts "\t#{fonts.size + 1} Random"
+
+		print "\nSelect any Style(from 1 to #{fonts.size + 1}): "
+		choice = STDIN.gets.to_i
+		random = ((choice > fonts.size) || (choice < 1)) ? true : false
+		font, word = fonts[choice - 1], ''
+
+		if ARGV.empty?
+			puts "Start Typing!..."
+			loop do
+				w = STDIN.getch
+				raise Interrupt if ["\u0003", "\v"].include?(w)	# ctrl + c / ctrl + k => exit prompt
+
+				word += "\033[38;5;#{rand(0..230)}m" if @coloured	# colour flag used
+				word += "\033[5m" if @blink				# blink flag used
+
+				if w == "\u007F" then word += "\b\s\e[D"		# backspace => delete
+					elsif w == "\r" then word += "\n"		# enter => "\n"
+					elsif w == "\u0017" then word += "\e[A"		# ctrl + w => up
+					elsif w == "\u0013" then word += "\e[B"		# ctrl + s => down
+					elsif w == "\u0001" then word += "\e[D"		# ctrl + a => left
+					elsif w == "\u0004" then word += "\e[C"		# ctrl + d => right
+					elsif w == "\u0000" then word += "\s\b"		# ctrl + space => delete
+					elsif w == "\u0012" then word = '' 		# ctrl + r => clear
+					elsif w == "\f" then word = ''			# ctrl + l => clear
+				else
+					word += "#{w =~ /[a-z]/ ? gen.call(font, w) : w }" unless random
+					word += "#{w =~ /[a-z]/ ? gen.call(fonts.sample, w) : w }" if random
+				end
+
+				print "\033[H\033[J#{word}"
+			end
+		else
+			ARGV.each do |word|
+				word.chars do |w|
+					print "\033[38;5;#{rand(0..230)}m" if @coloured
+					print "\033[5m" if @blink
+					print(w =~ /[a-z]/ ? gen.call(font, w) : w) unless random
+					print(w =~ /[a-z]/ ? gen.call(fonts.sample, w) : w) if random
+				end
+				print(' ')
+			end
+		end
+	rescue Interrupt
+		print "\n\033[0mExit now? (Y/n) "
+		retry if STDIN.gets.downcase.include?('n')
+		exit 0
+	rescue Exception => e
+		puts "\033[0mUh oh, #{__FILE__} crashed\nWhat would you like to do?\n
+			1. Exit
+			2. Retry
+			3. Show Help
+			4. Show Error Details
+			5. Save Error Details to #{Dir.pwd}/error.log
+			6. Contact Developer
+			Default Exit"
 		case STDIN.gets.to_i
 			when 2 then retry
-			else exit! 65
-		end
-		exit! 2
-
-	rescue Errno::EACCES
-		puts 'Requires root privilege to run the update'
-		exit!
-
-	rescue Exception => e
-		exception_handle.call(e)
-	end
-end
-
-if ARGV.include?('--fortune')
-	begin
-		puts File.read('/usr/share/cowspeak/fortunes.data').split("\n%\n").sample
-	rescue Exception => e
-		exception_handle.call(e)
-	end
-	exit
-end
-
-begin
-	count, i, init, init_length = 0, 0, "=" * (%x(tput cols).to_i/2), (%x(tput cols ).to_i/2)
-	arg1, arg2, arg3 = [], [], []
-	arg1 = ARGV[0].split('=').map(&:chomp) unless ARGV[0].nil?
-	arg2 = ARGV[1].split('=').map(&:chomp) unless ARGV[1].nil?
-	arg3 = ARGV[2].split('=').map(&:chomp) unless ARGV[2].nil?
-
-	if %w(--file -f).include? arg1[0] then file = arg1[1]
-		elsif %w(--file -f).include? arg2[0] then file = arg2[1]
-		elsif %w(--file -f).include? arg3[0] then file = arg3[1]
-		else file = "/usr/share/cowspeak/arts/#{%w(cow.art squirrels.art killer_squirrels.art).sample}"
-	end
-	unless File.file?(file)
-		puts 'Looks like the art file doesn\'t exist'
-		puts "Type #{__FILE__} --help or #{__FILE__} -h for help"
-		puts "Type #{__FILE__} --art or #{__FILE__} -a for help regarding art"
-		exit! 127
-	end
-
-	if %w(--text -t).include? arg1[0] then text = arg1[1]
-	elsif %w(--text -t).include? arg2[0] then text = arg2[1]
-	elsif %w(--text -t).include? arg3[0] then text = arg3[1]
-
-	elsif %w(--read -r).include? arg1[0]
-		if File.exist?(arg1[1]) then text = File.read(arg1[1]).gsub("\n", ' ') else puts "File Doesn't exist. #{__FILE__} -h for more help" ; exit! 127 end
-	elsif %w(--read -r).include? arg2[0]
-		if File.exist?(arg2[1]) then text = File.read(arg2[1]).gsub("\n", ' ') else puts "File Doesn't exist. #{__FILE__} -h for more help" ; exit! 127 end
-	elsif %w(--read -r).include? arg3[0]
-		if File.exist?(arg3[1]) then text = File.read(arg3[1]).gsub("\n", ' ') else puts "File Doesn't exist. #{__FILE__} -h for more help" ; exit! 127 end
-
-	else text = File.read('/usr/share/cowspeak/fortunes.data').split("\n%\n").sample.gsub("\n", ' ')
-	end
-
-	print ' //' + init + "\\\\\n"
-	text.each_char do |c|
-		print count == 0 ? "|| #{c}" : "#{c}"
-		count += 1
-		i += 1
-		if (count >= init_length - 10 and c == " ") or i == text.length or count == init_length
-			print " " * (init_length - count + 1) + "||" + "\n"
-			count = 0
+			when 3 then Help.call
+			when 4 then puts e
+			when 5 then File.open('error.log', 'a') { |f| f.puts e }
+			when 6 then
+				puts "please contact <souravgoswami@protonmail.com> and tell him about #{e} for #{__FILE__}"
+			else exit! 127
 		end
 	end
-
-	print ' \\\\' + init + "//\n"
-	a = File.readlines(file)[2..-1]
-	think = %w[. o O].sample
-	puts "  " * a.length + think * 3 + "\n" + "  " * a.length + think * 2 + "\n" + "  " * a.length + think + "\n", a
-
-rescue Exception => e
-	exception_handle.call(e)
 end
+
+check_args
