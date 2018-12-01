@@ -1,39 +1,90 @@
-.TH cowspeak 1 "29th Oct 2018" "1.4" "cowspeak man page"
+.TH cowspeak 1 "DEC 1 2018" "1.6" "cowspeak man page"
+
 .SH NAME
 cowspeak \- Display an animal with a random quote or your own text.
+
 .SH SYNOPSIS
 cowspeak, the program displays an animal with a random quote or your own text.
+
 .SH OPTIONS
 
-.SH		--art or -a
+.B		--art or -a
+
 		Display a tutorial on adding your own art.
 
-.SH		--blink or -b
+.B		--blink or -b
+
 		Blink the texts (not supported in all terminals yet).
 
-.SH		--documentation or -d
+.B		--documentation or -d
+
 		Display the whole documentation including this help.
 
-.SH		--file= or -f=
+.B		--download or -dl
+
+		Download missing files and database from Github
+
+.B		--file= or -f=
+
 		Specify the ASCII file path to display your own ASCII art.
 
-.SH		--fortune
-		Show a fortune without any art.
+.B		--help or -h
 
-.SH		--help or -h
 		Display this help.
 
-.SH		--manual or -m
+.B		--manual or -m
+
 		Display a manual. Same as documentation.
 
-.SH		--read or -r=
+.B		--no-art or -na
+
+		Do not display the animal.
+
+.B		--net or -n
+
+		Get data from a website (in curl format).
+
+.B		--no-colour or -nc
+
+		Don't colourize the output.
+
+.B		--read or -r=
+
 		Read a file.
 
-.SH		--text= or -t=
+.B		--rotate-colour or -rc
+
+		Rotate the output colours in each line.
+
+.B		--text= or -t=
+
 		Display a custom text.
 
-.SH		--update or -u
-		Update fortune database from Github.
+.SH EXAMPLES
+.SH			No argument:
+				Show a random existing character with a random fortune and colours.
+
+.SH			For custom text:
+				cowspeak --text='text' or -t='text'
+
+.SH			To display your own ASCII art:
+				cowspeak --file='path/file.art'
+
+.SH			To display your own art with your text:
+				cowspeak --file=directory/file.art --text='your text'
+
+.SH			To read a file from the storage:
+				cowspeak --read='path/file.extension' or -r='path/file.extension'
+
+.SH			Pipe another program's output to cowspeak (also accepts arguments):
+				echo hello | cowspeak
+
+				echo hello | cowspeak --argument -short_argument
+
+.SH			To read from the internet in curl format:
+				cowspeak --net=http://www.example.net
+
+				cowspeak --net=http://www.example.net --argument -short_argument
 
 .SH AUTHOR
 Sourav Goswami (souravgoswami@protonmail.com)
