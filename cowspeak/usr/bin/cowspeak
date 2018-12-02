@@ -2,25 +2,30 @@
 # Written by Sourav Goswami
 # The GNU General Public License v3.0
 
+STDOUT.sync = true
+
+# Set the path where to look and download (--download or -d) the cowspeak files
+PATH = "/usr/share/cowspeak/"
+
 coloured, blink = true, false
+
 # Check if the output should colourized
-if ARGV.include?('--no-colour') or ARGV.include?('-nc')
+if ARGV.include?('--no-colour') || ARGV.include?('-nc')
 	ARGV.delete('--no-colour')
 	ARGV.delete('-nc')
 	coloured = false
 end
 
 # Check if the output should be blinked
-if ARGV.include?('--blink') or ARGV.include?('-b')
+if ARGV.include?('--blink') || ARGV.include?('-b')
 	ARGV.delete('--blink')
 	ARGV.delete('-b')
 	blink = true
-	at_exit do puts "\033[0m" end
 end
 
 # Check if the colour should be rotated in each line
 rotate_colour = false
-if ARGV.include?('--rotate-colour')  or ARGV.include?('-rc')
+if ARGV.include?('--rotate-colour')  || ARGV.include?('-rc')
 	ARGV.delete('--rotate_colour')
 	ARGV.delete('-rc')
 	rotate_colour = true
@@ -29,29 +34,29 @@ end
 chars = ->(string) do
 	if coloured
 		characters = string.split("\n")
-		selected_colours = [(196..200), (202..207), (208..213), (82..87), (40..45), (214..219), (112..117), (138..159), (74..87), (112..123),
-		 [34, 35, 36, 37, 38, 39, 174, 175, 179, 180, 181] ].sample.to_a
+		selected_colours = [(196..200), (202..207), (208..213), (82..87), (40..45), (214..219), (112..117), (142..147), (46..51), (112..123), (82..87),
+		[34, 35, 36, 37, 38, 39, 174, 179, 180, 181], [42, 105, 111, 117, 211] ].sample.to_a
 
-		selected_colour_array = selected_colours
 		selected_colour_array = [selected_colours, selected_colours.reverse].sample
 
 		for c in characters
 			index = 0
-			for i in (0..c.length - 1) do
-				index += 1 if (i % (c.length/(selected_colour_array.length)) == 0) unless i == 0 || c.length <= selected_colour_array.length
-				index = selected_colour_array.size - 1 if index >= selected_colour_array.size
-
-				print "\033[5m" if blink
-				print("\033[38;5;#{selected_colour_array[index]}m#{c[i]}\033[0m")
+			clength, array_length = c.length, selected_colour_array.length
+			clength.times do |i|
+				index += 1 if (i % (clength/(array_length)) == 0) unless (i == 0 || i ==  1 || clength <= array_length || c[i] == " ")
+				index = array_length - 1 if index >= array_length
+				STDOUT.print "\033[5m" if blink
+				STDOUT.print("\033[38;5;#{selected_colour_array[index]}m#{c[i]}")
 			end
-			puts
+			STDOUT.puts
 			selected_colour_array.rotate! if rotate_colour
 			selected_colour_array.shift if selected_colour_array.length > 3
 		end
 	else
-		print "\033[5m" if blink
-		print string, "\n"
+		STDOUT.print "\033[5m" if blink
+		STDOUT.print string, "\n"
 	end
+	STDOUT.print("\033[0m")
 end
 
 # Exit if no tty is detected
@@ -96,7 +101,7 @@ This is the help page, for more help with examples, run #{__FILE__} --documentat
 exit! 0
 }
 
-if ARGV.include?('--documentation') or ARGV.include?('-d') or ARGV.include?('--manual') or ARGV.include?('-m')
+if ARGV.include?('--documentation') || ARGV.include?('-d') || ARGV.include?('--manual') || ARGV.include?('-m')
 ARGV.delete('--documentation')
 ARGV.delete('-d')
 ARGV.delete('--manual')
@@ -153,14 +158,14 @@ Pass me some arguments:
 		If you are missing some files, then please take a moment to download all the files from Github.
 		To do that, run:
 			cowspeak --download or -d
-			It will download all the necessary files. This may download 5 MB files from the internet.
-			NOTE: This argument will write files to /usr/share/cowspeak/ directory.
+			It will download all the necessary files. This will download less than 400 KiB files from the internet.
+			NOTE: This argument will write files to #{PATH} directory.
 				     This may need root privilege to do that.")
 exit! 0
 end
 
 # Show a user friendly tutorial on how to add arts
-if ARGV.include?('--art') or ARGV.include?('-a')
+if ARGV.include?('--art') || ARGV.include?('-a')
 ARGV.delete('--art')
 ARGV.delete('-a')
 puts "
@@ -185,7 +190,7 @@ You can create your own art. Here's a short introduction on how to do that:
 
 	- You can copy and paste other's arts, just follow the above rules.
 	- For more examples, look at other files.
-	- You can use other files. By default they are located in /usr/share/cowspeak/arts/
+	- You can use other files. By default they are located in #{PATH}/arts/
 	- To use your custom art, just run #{__FILE__} --file='your_art.art'
 	- If it is located in another directory then #{__FILE__} --file='directory/your_art.art'
 "
@@ -194,97 +199,99 @@ end
 
 # Take exceptions very very seriously. Handle them very gently.
 exception_handle = ->(error) {
-	puts "Uh oh! Sorry, #{__FILE__} has Encountered an Error."
-	print "Select one of the following:
+	chars.call "Uh oh! Sorry, #{__FILE__} has Encountered an Error."
+	chars.call("Select one of the following:
 		1. Exit.
 		2. Show the usage (#{__FILE__} -h)
 		3. Show Error Details.
 		4. Save Error Details to a Log File.
-		5. Contact Developer
-		- Default: 1 (Exit).
-		-> Choose: "
+		5. Contact Developer.
+		- Default: 1 (Exit).")
+		print("\t\t\033[5m->\033[0m Choose: ")
 
 	case STDIN.gets.to_i
 		when 2 then help.call
-		when 3 then puts error ; exit! 125
+		when 3 then chars.call(error.to_s) ; exit! 125
 		when 4
 			File.open('/tmp/cowspeak-log.txt', 'a+') do |log_file|
 				log_file.puts("\n#{Time.new.strftime('Error on %D at %T')} => \n\t#{error}")
-				puts 'The error has been written to /tmp/cowspeak-log.txt'
+				chars.call('The error has been written to /tmp/cowspeak-log.txt')
 			end
 			exit! 128
 		when 5
-			puts "Please contact <souravgoswami@protonmail.com>"
-			puts "Tell him about #{error} in #{__FILE__}"
+			chars.call('Please contact <souravgoswami@protonmail.com>')
+			chars.call("Tell him about #{error} in #{__FILE__}")
 		else exit! 127
 	end
 }
 
-if ARGV.include?('--help') or ARGV.include?('-h')
+if ARGV.include?('--help') || ARGV.include?('-h')
 	ARGV.delete('--help')
 	ARGV.delete('-h')
 	help.call
 end
 
-if ARGV.include?('--download') or ARGV.include?('-dl')
+if ARGV.include?('--download') || ARGV.include?('-dl')
 	ARGV.delete('--download')
 	ARGV.delete('-dl')
 
 	begin
 		require 'net/http'
 
-		unless File.exists?('/usr/share/cowspeak/')
-			Dir.mkdir('/usr/share/cowspeak/')
-			puts 'Created directory /usr/share/cowspeak/'
+		unless File.exist?(PATH)
+			Dir.mkdir(PATH)
+			chars.call "Created directory #{PATH}"
 		end
 
 		data = Net::HTTP.get(URI('https://raw.githubusercontent.com/bmc/fortunes/master/fortunes')).chomp
 		unless data.include?('404: Not Found')
-			File.open('/usr/share/cowspeak/fortunes.data', 'w') { |file| file.puts(data) }
-			puts "The fortunes database has been downloaded and installed to /usr/share/cowspeak/fortunes."
+			File.open(PATH + "fortunes.data", 'w') { |file| file.puts(data) }
+			chars.call "The fortunes database has been downloaded and installed to #{PATH}/fortunes."
 
-			unless File.exists?('/usr/share/cowspeak/arts')
-				Dir.mkdir('/usr/share/cowspeak/arts')
-				puts 'Created directory /usr/share/cowspeak/arts/'
+			unless File.exist?(PATH + "arts")
+				Dir.mkdir(PATH + "arts")
+				chars.call "Created directory #{PATH}arts/"
 			end
 
+			chars.call "Downloading art files"
+
 			data = Net::HTTP.get(URI('https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak_files/arts/cow.art')).chomp
-			File.open('/usr/share/cowspeak/arts/cow.art', 'w') { |file| file.write(data) }
-			puts "Successfully downloaded and installed an art file:\n#{data}"
+			File.open(PATH + "arts/cow.art", 'w') { |file| file.write(data) }
+			chars.call "\nSuccessfully installed an art file in #{PATH}cowspeak_files/arts/\n#{data.split("\n")[0]}"
 
 			data = Net::HTTP.get(URI('https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak_files/arts/dolphin.art')).chomp
-			File.open('/usr/share/cowspeak/arts/dolphin.art', 'w') { |file| file.write(data) }
-			puts "Successfully downloaded and installed an art file:\n#{data}"
+			File.open(PATH + "arts/dolphin.art", 'w') { |file| file.write(data) }
+			chars.call "\nSuccessfully installed an art file in #{PATH}cowspeak_files/arts/\n#{data.split("\n")[0]}"
 
 			data =Net::HTTP.get(URI('https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak_files/arts/killer_squirrels.art')).chomp
-			File.open('/usr/share/cowspeak/arts/killer_squirrels.art', 'w') { |file| file.write(data) }
-			puts "Successfully downloaded and installed an art file:\n#{data}"
+			File.open(PATH + "arts/killer_squirrels.art", 'w') { |file| file.write(data) }
+			chars.call "\nSuccessfully installed an art file in #{PATH}cowspeak_files/arts/\n#{data.split("\n")[0]}"
 
 			data =Net::HTTP.get(URI('https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak_files/arts/penguin.art')).chomp
-			File.open('/usr/share/cowspeak/arts/penguin.art', 'w') { |file| file.write(data) }
-			puts "Successfully downloaded and installed an art file:\n#{data}"
+			File.open(PATH + "arts/penguin.art", 'w') { |file| file.write(data) }
+			chars.call "\nSuccessfully installed an art file in #{PATH}cowspeak_files/arts/\n#{data.split("\n")[0]}"
 
 			data = Net::HTTP.get(URI('https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak_files/arts/spider.art')).chomp
-			File.open('/usr/share/cowspeak/arts/spider.art', 'w') { |file| file.write(data) }
-			puts "Successfully downloaded and installed an art file:\n#{data}"
+			File.open(PATH + "arts/spider.art", 'w') { |file| file.write(data) }
+			chars.call "\nSuccessfully installed an art file in #{PATH}cowspeak_files/arts/\n#{data.split("\n")[0]}"
 
 			data = Net::HTTP.get(URI('https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak_files/arts/squirrels.art')).chomp
-			File.open('/usr/share/cowspeak/arts/squirrels.art', 'w') { |file| file.write(data) }
-			puts "Successfully downloaded and installed an art file:\n#{data}"
+			File.open(PATH + "arts/squirrels.art", 'w') { |file| file.write(data) }
+			chars.call "\nSuccessfully installed an art file in #{PATH}cowspeak_files/arts/\n#{data.split("\n")[0]}"
 
-			puts "All Done, Please Restart the Application"
+			chars.call "All Done, Please Restart the Application"
 
 			exit! 0
 
 		else
-			puts "Sorry for the inconvenience. Something went terribly wrong (can't access one of the file)."
-			puts "If the problem persists, contact: souravgoswami@protonmail.com."
+			chars.call "Sorry for the inconvenience. Something went terribly wrong (can't access one of the file)."
+			chars.call "If the problem persists, contact: souravgoswami@protonmail.com."
 			exit! 100
 		end
 
 	rescue SocketError
-		puts 'Do you have an internet connection?'
-		puts "1. Exit.\n2. Retry.\nDefault: 1 (Exit)."
+		chars.call 'Do you have an internet connection?'
+		chars.call "1. Exit.\n2. Retry.\nDefault: 1 (Exit)."
 		case STDIN.gets.to_i
 			when 2 then retry
 			else exit! 65
@@ -292,7 +299,7 @@ if ARGV.include?('--download') or ARGV.include?('-dl')
 		exit! 2
 
 	rescue Errno::EACCES
-		puts 'Requires root privilege to download and access /usr/share/cowspeak/ directory. Please run it with proper permission.'
+		chars.call "Requires root privilege to download and access #{PATH} directory. Please run it with proper permission."
 		exit!
 
 	rescue Exception => e
@@ -314,18 +321,19 @@ begin
 	unless file[-1].nil?
 		if file[-1].split('=')[1]
 			unless file.empty? then file = file[-1].split('=')[1]
-				else file = "/usr/share/cowspeak/arts/#{%w(cow.art squirrels.art killer_squirrels.art).sample}" end
+				else file = PATH + "arts/#{%w(cow.art squirrels.art killer_squirrels.art).sample}" end
 		else
-				file = "/usr/share/cowspeak/arts/#{%w(cow.art squirrels.art killer_squirrels.art).sample}"
+				file = PATH + "arts/#{%w(cow.art squirrels.art killer_squirrels.art).sample}"
 		end
 	else
-			file = "/usr/share/cowspeak/arts/#{%w(cow.art squirrels.art killer_squirrels.art).sample}"
+			file = PATH + "arts/#{%w(cow.art squirrels.art killer_squirrels.art).sample}"
 	end
 
 	unless File.file?(file)
-		puts 'Looks like the art file doesn\'t exist'
-		puts "Type #{__FILE__} --help or #{__FILE__} -h for help"
-		puts "Type #{__FILE__} --art or #{__FILE__} -a for help regarding art"
+		chars.call 'Looks like the art file doesn\'t exist'
+		chars.call "Type #{__FILE__} --download or #{__FILE__} -d to download all the necessary files."
+		chars.call "Type #{__FILE__} --help or #{__FILE__} -h for help."
+		chars.call "Type #{__FILE__} --art or #{__FILE__} -a for help regarding art."
 		exit! 127
 	end
 
@@ -355,11 +363,11 @@ begin
 	end
 
 	if text.empty?
-		text = ARGV.select { |t| t.start_with?('--text=') or t.start_with?('-t=') }
+		text = ARGV.select { |t| t.start_with?('--text=') || t.start_with?('-t=') }
 		text.each do |arg| ARGV.delete(arg) end
 
 		unless text.empty? then text= text[-1].split('=')[1] end
-		text = File.read('/usr/share/cowspeak/fortunes.data').split("\n%\n").sample if text.nil? or text.empty?
+		text = File.read(PATH + "fortunes.data").split("\n%\n").sample if text.nil? || text.empty?
 
 		read = ARGV.select { |r| r.start_with?('--read=') || r.start_with?('-r=') }
 		read.each do |arg| ARGV.delete(arg) end
@@ -367,11 +375,11 @@ begin
 		unless read.empty?
 			f = read[-1].split('=')[1]
 			unless f.nil?
-				text = File.read(f) if File.exists?(f)
+				text = File.read(f) if File.exist?(f)
 			end
 		end
 
-		net = ARGV.select { |n| n.start_with?('--net=') or n.start_with?('-n=') }
+		net = ARGV.select { |n| n.start_with?('--net=') || n.start_with?('-n=') }
 		net.each do |arg| ARGV.delete(arg) end
 
 		unless net.empty?
@@ -381,14 +389,14 @@ begin
 					require 'net/http'
 					text = Net::HTTP.get(URI(uri))
 				rescue Errno::ECONNREFUSED
-					puts "Failed to open the URL. Please Make sure you have mentioned the protocol"
-					puts "Example:\n\thttp://www.example.net"
+					chars.call "Failed to open the URL. Please Make sure you have mentioned the protocol"
+					chars.call "Example:\n\thttp://www.example.net"
 					exit! 1
 				rescue SocketError
-					puts "Failed to read the URL. Please make sure you have an active internet connection."
+					chars.call "Failed to read the URL. Please make sure you have an active internet connection."
 					exit! 2
 				rescue Exception
-					puts "Sorry an error occurred while trying to open #{uri}"
+					chars.call "Sorry an error occurred while trying to open #{uri}"
 					exit! 126
 				end
 			end
@@ -405,13 +413,14 @@ begin
 			all_chars += count == 0 ? "|| #{c}" : "#{c}"
 			count += 1
 			i += 1
-			if (count >= init_length - 10 and c == " ") or i == text.length or count == init_length
+			if (count >= init_length - 10 and c == " ") || i == text.length || count == init_length
 				all_chars += " " * (init_length - count + 1) + "||" + "\n"
 				count = 0
 			end
 		end
 
 		all_chars += ' \\\\' + init + "//\n"
+		# p File.open(file).readlines
 		a = File.readlines(file)[2..-1]
 		think = %w[. o O].sample
 		all_chars += "  " * a.length + think * 3 + "\n" + "  " * a.length + think * 2 + "\n" + "  " * a.length + think + "\n" + a.join
@@ -420,7 +429,7 @@ begin
 	end
 
 	chars.call(all_chars)
-
+# raise Error
 rescue Exception => e
 	exception_handle.call(e)
 end
