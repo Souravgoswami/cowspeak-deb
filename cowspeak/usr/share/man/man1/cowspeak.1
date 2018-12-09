@@ -1,4 +1,4 @@
-.TH cowspeak 1 "DEC 1 2018" "1.6" "cowspeak man page"
+.TH cowspeak 1 "DEC 10 2018" "1.85" "cowspeak man page"
 
 .SH NAME
 cowspeak \- Display an animal with a random quote or your own text.
@@ -8,57 +8,78 @@ cowspeak, the program displays an animal with a random quote or your own text.
 
 .SH OPTIONS
 
-.B		--art or -a
+.B   --art or -a                   
 
-		Display a tutorial on adding your own art.
+	Display a tutorial on adding your own art.
 
-.B		--blink or -b
 
-		Blink the texts (not supported in all terminals yet).
+.B   --blink or -b			
 
-.B		--documentation or -d
+	Blink the texts (not supported in all terminals yet).
 
-		Display the whole documentation including this help.
+.B   --documentation or -d
 
-.B		--download or -dl
+	Display the whole documentation including this help.
 
-		Download missing files and database from Github
+.B   --download or -dl
 
-.B		--file= or -f=
+	Download missing files and database from Github.
 
-		Specify the ASCII file path to display your own ASCII art.
+.B   --file=<path> or -f=<path>
 
-.B		--help or -h
+	Specify the ASCII file path to display your own ASCII art.
 
-		Display this help.
+.B   --help or -h
 
-.B		--manual or -m
+	Display this help.
 
-		Display a manual. Same as documentation.
+.B   --invert or -inv
 
-.B		--no-art or -na
+	Invert everything text! Read from right to left in English!!
 
-		Do not display the animal.
+.B   --manual or -m
 
-.B		--net or -n
+	Display a manual. Same as documentation.
 
-		Get data from a website (in curl format).
+.B   --net=<url> or -n=<url>
 
-.B		--no-colour or -nc
+	Read data from a website (in curl format).
 
-		Don't colourize the output.
+.B   --no-art or -na
 
-.B		--read or -r=
+	Don't display the animal.
 
-		Read a file.
+.B   --no-colour or -nc
 
-.B		--rotate-colour or -rc
+	Don't colourize the output.
 
-		Rotate the output colours in each line.
+.B   --no-text or -nt
 
-.B		--text= or -t=
+	Don't show any text, and only show the animal.
 
-		Display a custom text.
+.B   --read=<file> or -r=<file>
+
+	Read a file.
+
+.B   --reverse or -rev
+
+	Cowspeak reads upside down!
+
+.B   --rotate-colour or -rc
+
+	Rotate the output colours in each line.
+
+.B   --show-arts or -sa
+
+	Show all available installed arts in the default directory.
+
+.B   --text=<text> or -t=<text>
+
+	Display a custom text.
+
+.B   --version or -v
+
+	Display the current #{__FILE__} version.
 
 .SH EXAMPLES
 .SH			No argument:
