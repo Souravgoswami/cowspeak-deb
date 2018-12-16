@@ -1,4 +1,4 @@
-.TH cowspeak 1 "DEC 10 2018" "1.85" "cowspeak man page"
+.TH cowspeak 1 "DEC 16 2018" "2.05" "cowspeak man page"
 
 .SH NAME
 cowspeak \- Display an animal with a random quote or your own text.
@@ -8,14 +8,29 @@ cowspeak, the program displays an animal with a random quote or your own text.
 
 .SH OPTIONS
 
-.B   --art or -a                   
+.B   --art or -a
 
 	Display a tutorial on adding your own art.
 
 
-.B   --blink or -b			
+.B   --blink or -b
 
 	Blink the texts (not supported in all terminals yet).
+
+.B   --borderh=<ch>/-brh=<ch>
+
+	Horizontal border character.
+
+
+.B   --borderv=<ch>/-brv=<ch>
+
+	Vertical border character.
+
+
+.B   --bubble=<text>/-bbl=<text>
+
+         Specify the character of speech balloons.
+
 
 .B   --documentation or -d
 
@@ -84,6 +99,39 @@ cowspeak, the program displays an animal with a random quote or your own text.
 .SH EXAMPLES
 .SH			No argument:
 				Show a random existing character with a random fortune and colours.
+
+.SH			Specify the horizontal border character
+
+			(the following example will draw the border with * character):
+
+				cowspeak --borderh='*'
+
+				cowspeak -brh='*'
+
+			Note that if you specify more than one character, it will select any one at random.
+
+
+.SH			Specify the horizontal border character
+
+			(the following example will draw the border with * character):
+
+				cowspeak --borderv='*'
+
+				cowspeak -brv='*'
+
+			Note that if you specify more than a character, it will select any one at random.
+
+
+.SH			Specify the speech bubbles character
+
+			(the following example will draw the border with * character):
+
+				cowspeak --bubble='*'
+
+				cowspeak -bbl='*'
+
+			Note that if you specify more than one character, it will draw the whole string.
+
 
 .SH			For custom text:
 				cowspeak --text='text' or -t='text'
