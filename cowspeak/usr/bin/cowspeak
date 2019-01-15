@@ -420,9 +420,9 @@ begin
 		colourize.call "Type #{__FILE__} --show-arts or #{__FILE__} -sa to see available arts in the default directory...\n"
 		colourize.call "Type #{__FILE__} --help or #{__FILE__} -h for help.\n"
 		colourize.call "Type #{__FILE__} --art or #{__FILE__} -a for help regarding art.\n"
-		file = PATH + "arts/#{%w(cow squirrels killer_squirrels cat deer dog mouse camel).sample}.art\n"
+		file = PATH + "arts/#{%w(cow squirrels killer_squirrels cat deer dog mouse camel).sample}.art"
+
 		unless File.readable?(file)
-			puts
 			colourize.call("The default files at location #{PATH + 'arts/'} doesn't exist\n")
 			colourize.call("Please run #{__FILE__} -dl to download all the necessary files at #{PATH}\n")
 			exit! ERR_FILE_NOT_FOUND
