@@ -10,7 +10,7 @@ VERSION = "Cowspeak version 2.18"
 # MAN_PAGE = 'https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak_files/cowspeak.1.gz'
 # MAN_PAGE_DIR = "#{PATH}cowspeak.1.gz"
 
-# Uncomment ONLY if ALL of the ABOVE declarations are COMMENTED (except VERISION)
+# Uncomment ONLY if ALL of the ABOVE declarations are COMMENTED (except VERSION)
 PATH ||= "/usr/share/cowspeak/"
 SOURCE_CODE ||= 'https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/bin/cowspeak'
 MAN_PAGE ||= 'https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/share/man/man1/cowspeak.1.gz'
