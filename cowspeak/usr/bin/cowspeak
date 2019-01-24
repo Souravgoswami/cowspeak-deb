@@ -2,7 +2,7 @@
 # Written by Sourav Goswami
 # The GNU General Public License v3.0
 # This program `require` io/console, open-uri, net/http, timeout. They are loaded as needed Search for 'require' in your editior. Don't change the VERSION Line No.
-VERSION = "Cowspeak version 2.17"
+VERSION = "Cowspeak version 2.18"
 
 # Set the path where to look for files and download (--download or -d) the new cowspeak files
 # PATH = "#{File.dirname(__FILE__)}/cowspeak_files/"
@@ -152,7 +152,7 @@ All the Available arguments:
   --no-text/-nt			Don't show any text, show the animal.
   --read=<file>/-r=<file>	Read a file.
   --reverse/-rev		Cowspeak reads upside down!
-  --random-colour/-rc		Randomize the output colours in each line.
+  --rotate-colour/-rc		Rotate the output colours in each line.
   --show-arts/-sa		Show arts in the default directory.
   --text=<text>/-t=<text>	Display a custom text.
   --version/-v			Display the current #{__FILE__} version.
