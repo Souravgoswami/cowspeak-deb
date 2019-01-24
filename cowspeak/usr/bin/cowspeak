@@ -106,6 +106,7 @@ colourize = ->(string) do
 		STDOUT.print enum.map {|ch| ch}.join
 	end
 	STDOUT.print("\e[0m")
+	nil
 end
 
 # Determine the terminal size. NOTE: STDIN.winsize instead of STDOUT.winsize will raise Errno::ENOTTY when reading output for pipe.
@@ -218,12 +219,7 @@ exit! 0
 end
 
 if ARGV.include?('--show-arts') || ARGV.include?('-sa')
-	Dir.entries(PATH + 'arts').sort.each do |file|
-		unless file == '.' || file == '..'
-			colourize.call(File.read(PATH + 'arts/' + file) + "\nPath: #{PATH + 'arts' + file}")
-			puts
-		end
-	end
+	Dir.entries(PATH + 'arts').sort.each { |file| puts colourize.call(File.read(PATH + 'arts/' + file) + "\nPath: #{PATH + 'arts' + file}") unless file == '.' || file == '..' }
 	exit! 0
 end
 
@@ -399,8 +395,7 @@ if ARGV.include?('--download') || ARGV.include?('-dl')
 				colourize.call "Created directory #{PATH}arts/\n"
 			end
 
-			colourize.call "Downloading art files...\n"
-			puts
+			puts colourize.call "Downloading art files...\n"
 
 			# Install the art files...
 			uris = %w(
@@ -428,9 +423,8 @@ if ARGV.include?('--download') || ARGV.include?('-dl')
 			uris.size.times do |index|
 				File.write("#{PATH + "arts/" + write_to[index]}.art", Net::HTTP.get(URI(uris[index])))
 
-				colourize.call "Successfully installed an art file at #{PATH}arts/\n"
-				colourize.call "#{File.read(PATH + 'arts/' + write_to[index] + '.art').split("\n")[0..1].join("\n")}\n"
-				puts
+				puts colourize.call "Successfully installed an art file at #{PATH}arts/"
+				puts colourize.call "#{File.read(PATH + 'arts/' + write_to[index] + '.art').split("\n")[0..1].join("\n")}"
 			end
 
 			colourize.call "All Done!\n"
@@ -622,8 +616,7 @@ begin
 
 rescue SystemExit, Interrupt
 	printf "\n\n"
-	colourize.call('Exiting...')
-	puts
+	puts colourize.call('Exiting...')
 	exit! 0
 
 rescue Exception => e
