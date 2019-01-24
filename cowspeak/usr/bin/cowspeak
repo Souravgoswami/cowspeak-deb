@@ -6,7 +6,15 @@ VERSION = "Cowspeak version 2.18"
 
 # Set the path where to look for files and download (--download or -d) the new cowspeak files
 # PATH = "#{File.dirname(__FILE__)}/cowspeak_files/"
+# SOURCE_CODE = 'https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak'
+# MAN_PAGE = 'https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak_files/cowspeak.1.gz'
+# MAN_PAGE_DIR = "#{PATH}cowspeak.1.gz"
+
+# Uncomment ONLY if ALL of the ABOVE declarations are COMMENTED (except VERISION)
 PATH ||= "/usr/share/cowspeak/"
+SOURCE_CODE ||= 'https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/bin/cowspeak'
+MAN_PAGE ||= 'https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/share/man/man1/cowspeak.1.gz'
+MAN_PAGE_DIR ||= '/usr/share/man/man1/cowspeak.1.gz'
 
 STDIN.sync, STDOUT.sync = true, true
 coloured, blink = true, false
@@ -287,20 +295,24 @@ if ARGV.include?('--help') || ARGV.include?('-h')
 	help.call
 end
 
-if ARGV.include?('--update') || ARGV.include?('-u') || ARGV.include?('--force-update') || ARGV.include?('-fu')
+# Check if force update is enabled
+force_update = (ARGV.include?('--force-update') || ARGV.include?('-fu'))
+ARGV.delete('--force-update')
+ARGV.delete('-fu')
+
+# Check for updates.
+if ARGV.include?('--update') || ARGV.include?('-u') || force_update
 	require 'net/http'
 
 	ARGV.delete('--update')
 	ARGV.delete('-u')
 
 	puts colourize.call('Looking for updates! Please wait a moment...')
-
 	current_version =  VERSION.scan(/\d+.\d+/).join.to_f
-	puts colourize.[] "Current version: #{current_version}"
 
 	begin
-		downloaded_data = Net::HTTP.get(URI('https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/bin/cowspeak'))
-		raw_man_page = Net::HTTP.get(URI('https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/share/man/man1/cowspeak.1.gz'))
+		downloaded_data, raw_man_page = Net::HTTP.get(URI(SOURCE_CODE)), Net::HTTP.get(URI(MAN_PAGE))
+		puts colourize.call("Current version: #{current_version}")
 
 	rescue SocketError
 		puts colourize.call "Can't get version info of cowspeak. Do you have an active internet connection?"
@@ -312,16 +324,13 @@ if ARGV.include?('--update') || ARGV.include?('-u') || ARGV.include?('--force-up
 	end
 
 	download_version = downloaded_data.to_s.split("\n")[4].to_s.scan(/\d+.\d+/).join.to_f
+	new_version = download_version > current_version
 
-	if (current_version >= download_version) && !(ARGV.include?('--force-update') || ARGV.include?('-fu'))
+	unless new_version || force_update
 		puts colourize.call "#{__FILE__} is up to date! Nothing to do."
-
 	else
-		ARGV.delete('--force-update')
-		ARGV.delete('-fu')
-
-		puts colourize.call "A new update is available."
-		puts colourize.call "Update to version #{download_version}? (Y/n)"
+		puts colourize.call "A new update is available." if new_version
+		puts colourize.call "#{new_version ? 'U' : 'Reu'}pdate to version #{download_version}? (Y/n)"
 
 		exit 0 if STDIN.gets.strip.downcase == 'n'
 
@@ -336,7 +345,7 @@ if ARGV.include?('--update') || ARGV.include?('-u') || ARGV.include?('--force-up
 			puts colourize.call("Permission Denied while trying to overwrite the contents of #{__FILE__}")
 			exit! ERR_NO_PERMISSION
 
-		rescue Exception
+		rescue Exception => e
 			puts colourize.call "Something wrong happened while trying to overwrite #{__FILE__}"
 			exception_handle.call(e)
 		end
@@ -344,25 +353,22 @@ if ARGV.include?('--update') || ARGV.include?('-u') || ARGV.include?('--force-up
 		puts colourize.call "Update the man page at /usr/share/man/man1/cowspeak.1? (Y/n)"
 
 		unless STDIN.gets.strip.downcase == 'n'
-
 			begin
-				puts colourize.call "Trying to update /usr/share/man/man1/cowspeak.1"
-				File.write("/usr/share/man/man1/cowspeak.1", raw_man_page)
+				puts colourize.call "Trying to update #{MAN_PAGE_DIR}"
+				File.write(MAN_PAGE_DIR, raw_man_page)
 				puts colourize.call "Man page updated."
 
 			rescue Errno::EACCES
 				puts colourize.call("Permission Denied while trying to overwrite the contents of #{__FILE__}")
 				exit! ERR_NO_PERMISSION
 
-			rescue Exception
+			rescue Exception => e
 				puts colourize.call "Something wrong happened while trying to overwrite #{__FILE__}"
 				exception_handle.call(e)
 			end
 		end
 	end
 end
-
-
 
 if ARGV.include?('--download') || ARGV.include?('-dl')
 	ARGV.delete('--download')
