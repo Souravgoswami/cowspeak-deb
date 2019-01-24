@@ -316,15 +316,15 @@ if ARGV.include?('--update') || ARGV.include?('-u')
 		exit 0 if STDIN.gets.strip.downcase == 'n'
 
 		begin
-			puts colourize.call "Trying to update #{File.dirname(__FILE__)}/#{__FILE__}"
+			puts colourize.call "Trying to update #{__FILE__}"
 			File.write(__FILE__, downloaded_data)
-			puts colourize.call "Updated #{File.dirname(__FILE__)}/#{__FILE__}"
+			puts colourize.call "Updated #{__FILE__}"
 			ARGV << '--download'
 		rescue Errno::EACCES
-			puts colourize.call("Permission Denied while trying to overwrite the contents of #{File.dirname(__FILE__)}/#{__FILE__}")
+			puts colourize.call("Permission Denied while trying to overwrite the contents of #{__FILE__}")
 			exit! ERR_NO_PERMISSION
 		rescue Exception
-			puts colourize.call "Something wrong happened while trying to overwrite #{File.dirname(__FILE__)}/#{__FILE__}"
+			puts colourize.call "Something wrong happened while trying to overwrite #{__FILE__}"
 			exception_handle.call(e)
 		end
 	end
