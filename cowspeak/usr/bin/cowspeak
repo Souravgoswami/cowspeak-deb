@@ -196,7 +196,7 @@ Help:
 #{__FILE__} -d or --documentation or --manual or -m for this documentation.
 Creating Custom Art:
 You can make your own art. Run #{__FILE__} --art or #{__FILE__} -a for more information.
-Update Download all the files:
+Update/Download all the files:
 If you are missing some files, then please take a moment to download all the files from Github.
 To do that, run:
 	cowspeak --download or -d
@@ -296,7 +296,7 @@ if ARGV.include?('--update') || ARGV.include?('-u')
 	puts colourize.[] "Current version: #{current_version}"
 
 	begin
-		downloaded_data = Net::HTTP.get(URI('https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak'))
+		downloaded_data = Net::HTTP.get(URI('https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/bin/cowspeak'))
 	rescue SocketError
 		puts colourize.call "Can't get version info of cowspeak. Do you have an active internet connection?"
 		exit! ERR_NO_INTERNET
