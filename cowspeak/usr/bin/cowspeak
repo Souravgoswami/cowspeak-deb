@@ -7,16 +7,16 @@ VERSION = "Cowspeak version 2.22"
 NEW_FEATURES = "1.\tAdded --welcome option (Run #{__FILE__} --help for more)!\n2.\tCowspeak will now be able to read new line characters (\"\\n\")!\n3.\tBugs Fixed.\n4.\tSpeed Improvement."
 
 # Set the path where to look for files and download (--download or -d) the new cowspeak files
-PATH = "#{File.dirname(__FILE__)}/cowspeak_files/"
-SOURCE_CODE = 'https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak'
-MAN_PAGE = 'https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak_files/cowspeak.1.gz'
-MAN_PAGE_DIR = "#{PATH}cowspeak.1.gz"
+# PATH = "#{File.dirname(__FILE__)}/cowspeak_files/"
+# SOURCE_CODE = 'https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak'
+# MAN_PAGE = 'https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak_files/cowspeak.1.gz'
+# MAN_PAGE_DIR = "#{PATH}cowspeak.1.gz"
 
 # Uncomment ONLY if ALL of the ABOVE declarations are COMMENTED (except VERSION)
-# PATH ||= "/usr/share/cowspeak/"
-# SOURCE_CODE ||= 'https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/bin/cowspeak'
-# MAN_PAGE ||= 'https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/share/man/man1/cowspeak.1.gz'
-# MAN_PAGE_DIR ||= '/usr/share/man/man1/cowspeak.1.gz'
+PATH ||= "/usr/share/cowspeak/"
+SOURCE_CODE ||= 'https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/bin/cowspeak'
+MAN_PAGE ||= 'https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/share/man/man1/cowspeak.1.gz'
+MAN_PAGE_DIR ||= '/usr/share/man/man1/cowspeak.1.gz'
 
 STDIN.sync, STDOUT.sync = true, true
 coloured, blink = true, false
