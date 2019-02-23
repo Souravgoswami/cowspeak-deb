@@ -541,7 +541,7 @@ begin
 		user, logname, hostname, time = ENV['USER'].split.map(&:capitalize).join, ENV['LOGNAME'], Socket.gethostname, Time.new.strftime('%B %d, %A, %H:%M:%S')
 		
 		files = begin
-			Dir.entries(Dir.pwd)[2..-1].count
+			"(#{Dir.entries(Dir.pwd)[2..-1].count} items)"
 		rescue Exception
 			''
 		end
@@ -562,7 +562,7 @@ begin
 		session = ENV['DESKTOP_SESSION']
 		session = session ? "Desktop Session: #{session}\n" : ''
 
-		text = "Welcome #{user}!\nLog Name: #{logname}\nHost Name: #{hostname}\n#{session}OS: #{os}\nUptime: #{up}\nShell: #{ENV['SHELL']}\nPWD: #{Dir.pwd} (#{files} items)\nTime: #{time}"
+		text = "Welcome #{user}!\nLog Name: #{logname}\nHost Name: #{hostname}\n#{session}OS: #{os}\nUptime: #{up}\nShell: #{ENV['SHELL']}\nPWD: #{Dir.pwd} {files}\nTime: #{time}"
 
 	elsif text.empty?
 		text = ARGV.select { |t| t.start_with?('--text=') || t.start_with?('-t=') }
