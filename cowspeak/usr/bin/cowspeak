@@ -539,7 +539,12 @@ begin
 	elsif ARGV.include?('--welcome') || ARGV.include?('-w')
 		require 'socket'
 		user, logname, hostname, time = ENV['USER'].split.map(&:capitalize).join, ENV['LOGNAME'], Socket.gethostname, Time.new.strftime('%B %d, %A, %H:%M:%S')
-		files = Dir.entries(Dir.pwd)[2..-1].count
+		
+		files = begin
+			Dir.entries(Dir.pwd)[2..-1].count
+		rescue Exception
+			''
+		end
 
 		os = if File.readable?('/etc/os-release')
 			"#{IO.readlines('/etc/os-release')[0].split('=')[1].strip.scan(/[a-z0-9A-Z\s]/).join} (#{RUBY_PLATFORM})"
