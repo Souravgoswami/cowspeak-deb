@@ -649,7 +649,9 @@ begin
 			" " * max_length + bubble * 3 + "\n " + ' ' * max_length + bubble * 2 + "\n" + ' ' * max_length +  bubble + "\n" + animal.join)
 
 	elsif show_art then colourize.call(IO.readlines(file)[2..-1].join)
-	elsif display_text then colourize.call(text)
+	elsif display_text
+		colourize.call(text)
+		puts
 	end
 
 rescue SystemExit, Interrupt
