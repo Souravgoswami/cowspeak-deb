@@ -15,14 +15,28 @@ https://www.opendesktop.org/p/1271477/
 Running cowspeak on other distributions:
     If you want to run `cowspeak` in Arch Linux / OpenSUSE / Fedora / CentOS / RedHat / Raspbian etc. other distributions, then         please follow the steps:
     
-     1. Please download / copy-paste the source code:
+   1. Make sure you have Ruby 💎:
+           Arch Linux 🏹 : `sudo pacman -S ruby`
+           Debian/Ubuntu/Linux Mint: `sudo apt install ruby`
+           Fedora: `sudo yum install ruby`
+           
+   2. Please download / copy-paste the source code 📝 :
            https://github.com/Souravgoswami/cowspeak-deb/tree/master/cowspeak/usr/bin
            [save it as `cowspeak` without any extension. #! will take care of the Ruby environment]
            
-     2. Move the source code to /usr/bin/ directory.
-     3. Run `sudo chmod 755 /usr/bin/cowspeak`
-     4. Run `sudo cowspeak -dl`
-     5. Press Enter when you are asked to confirm.
-     6. You are ready to use cowspeak on any GNU/Linux distribution!
-
-    
+   3. Move the source code to /usr/bin/ directory.
+   4. Run `sudo chmod 755 /usr/bin/cowspeak`.
+   5. Run `sudo cowspeak -dl`.
+   6. Press Enter when you are asked to confirm.
+   7. You are ready to use cowspeak on any GNU/Linux distribution!
+     
+ Screenshots 📸 :
+ ![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/Screenshot_2019-01-24_23-10-28.png)
+ 
+ ![alt cowspeak --welcome](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/xx.png)
+ 
+ ![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/sss.png)
+ 
+ ![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/Screenshot_2019-03-26_04-04-36.png)
+ 
+ ![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/Screenshot_2019-03-26_04-04-11.png)
