@@ -32,13 +32,15 @@ Running cowspeak on other distributions:
 
 Bug Report: If you got any error suddenly, please comment, or email us at: souravgoswami@protonmail.com, and we will fix them as soon as possible!
 
- Screenshots 📸 :
- ![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/Screenshot_2019-01-24_23-10-28.png)
+Screenshots 📸 :
+
+
+![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/Screenshot_2019-01-24_23-10-28.png)
  
- ![alt cowspeak --welcome](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/xx.png)
+![alt cowspeak --welcome](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/xx.png)
  
- ![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/sss.png)
+![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/sss.png)
  
- ![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/Screenshot_2019-03-26_04-04-36.png)
+![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/Screenshot_2019-03-26_04-04-36.png)
  
- ![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/Screenshot_2019-03-26_04-04-11.png)
+![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/Screenshot_2019-03-26_04-04-11.png)
