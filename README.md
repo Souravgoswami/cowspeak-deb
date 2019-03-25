@@ -2,7 +2,6 @@
 Display an animal with a random quote or your own text.
 
 It depends on `ruby`. We recommend you using `Ruby 2.4.0+`.
-If you got any other error suddenly, just notify us, and we will fix them as soon as possible!
 
 Note that this is only for GNU/Linux systems. There's a `cowspeak` repo that can run locally without any root permission. The repo is here:
 
@@ -29,7 +28,10 @@ Running cowspeak on other distributions:
    5. Run `sudo cowspeak -dl`.
    6. Press Enter when you are asked to confirm.
    7. You are ready to use cowspeak on any GNU/Linux distribution!
-     
+
+
+Bug Report: If you got any error suddenly, please comment, or email us at: souravgoswami@protonmail.com, and we will fix them as soon as possible!
+
  Screenshots 📸 :
  ![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/Screenshot_2019-01-24_23-10-28.png)
  
