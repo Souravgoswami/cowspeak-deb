@@ -15,9 +15,13 @@ Running cowspeak on other distributions:
     If you want to run `cowspeak` in Arch Linux / OpenSUSE / Fedora / CentOS / RedHat / Raspbian etc. other distributions, then         please follow the steps:
     
    1. Make sure you have Ruby 💎:
-           Arch Linux 🏹 : `sudo pacman -S ruby`
-           Debian/Ubuntu/Linux Mint: `sudo apt install ruby`
-           Fedora: `sudo yum install ruby`
+         Arch Linux 🏹 : `sudo pacman -S ruby`
+           
+         Debian/Ubuntu/Linux Mint: `sudo apt install ruby`
+         
+         `[or why don't you use the deb file from this repo if you are on Debian based system? That will install Ruby automatically]`
+      
+         Fedora: `sudo yum install ruby`
            
    2. Please download / copy-paste the source code 📝 :
            https://github.com/Souravgoswami/cowspeak-deb/tree/master/cowspeak/usr/bin
