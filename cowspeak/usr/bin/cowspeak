@@ -619,8 +619,8 @@ begin
 			bat_status = IO.read(File.join(battery_path, 'status')).strip! rescue ''
 			bat_percentage = IO.read(File.join(battery_path, 'charge_now')).to_i.*(100.0)./(IO.read(File.join(battery_path, 'charge_full')).to_i).to_i rescue -1
 
-			val = "\n:: Battery: #{bat_model}#{bat_manufacturer.empty? ? '' : " (#{bat_manufacturer})"}#{bat_tech.empty? ? '' : " (#{bat_tech})"}\n"
-			val.concat("   [Charge: #{bat_percentage}%#{bat_status.empty? ? '' : bat_status != 'Unknown' ? " | #{bat_status}" : ' | ...'}]") if bat_percentage > -1
+			val = "\n:: Battery: #{bat_model}#{bat_manufacturer.empty? ? '' : " (#{bat_manufacturer})"}#{bat_tech.empty? ? '' : " (#{bat_tech})"}"
+			val.concat("\n   [Charge: #{bat_percentage}%#{bat_status.empty? ? '' : bat_status != 'Unknown' ? " | #{bat_status}" : ' | ...'}]") if bat_percentage > -1
 			val
 		end
 
@@ -735,3 +735,4 @@ rescue SystemExit, Interrupt, SignalException
 rescue Exception => e
 	exception_handle.(e)
 end
+
