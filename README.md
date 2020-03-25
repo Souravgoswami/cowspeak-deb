@@ -78,9 +78,7 @@ You have to pass each argument separately. For example, cowspeak -rc rotates the
 If you pass an invalid argument, cowspeak will not inform you. It will simply ignore the invalid argument so you can cheer!
 
 ## Screenshots 📸
-![alt cowspeak --welcome](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/xx.png)
- 
-![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/sss.png)
+![alt cowspeak --welcome](https://github.com/Souravgoswami/cowspeak/blob/master/Screenshots/b.png)
  
 ![cowspeak](https://github.com/Souravgoswami/cowspeak-deb/blob/master/Screenshots/Screenshot_2019-03-26_04-04-36.png)
  
