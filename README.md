@@ -1,4 +1,7 @@
 # Cowspeak Deb 🐮
+Moved to
+https://github.com/Souravgoswami/cowspeak-root/
+
 https://souravgoswami.github.io/cowspeak/
 
 Display a gradient colourful animal with a random quote or your own text in your terminal.
