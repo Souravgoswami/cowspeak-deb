@@ -1,26 +1,29 @@
-#!/usr/bin/ruby -w
+#!/usr/bin/env ruby
 # Encoding: UTF-8
 # Written by Sourav Goswami <souravgoswami@protonmail.com>
-# The GNU General Public License v3.0
+# MIT Licence
 
 # For ROOT installation, set Root to true
 ROOT = true
 
-VERSION = "Cowspeak version 2.81"
+# Disable download of assets and other stuff
+ROOT_DISABLE_DOWNLOAD = false
+
+VERSION = "Cowspeak version 2.84"
 
 # 1000.0 => MB, 1024 => MiB when using the --welcome or -w option.
 UNIT = 1000.0
 
 BASENAME = Process.argv0
-NEW_FEATURES = "\t1. The -w option shows more information.\n\t2. Fixed several bugs.\n\t3. Cowspeak can work without art files, just make use of the -na or --no-art option.\n\t4. Cowspeak will work without the fortunes file. Just use the -nt or --no-text option."
+NEW_FEATURES = "\t1. Minor warnings fixed."
 # puts("\e[1;4mDebugging Purpose:\e[0m", 'New Features:', Kernel.eval(IO.readlines(__FILE__).find { |x| x.start_with?('NEW_FEATURES'.freeze) }.split(?=).drop(1).join(?=))) || exit!(0)
 
 PATH, SOURCE_CODE, MAN_PAGE, MAN_PAGE_DIR = unless ROOT
 	[ "#{__dir__}/cowspeak_files", 'https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak',
 	'https://raw.githubusercontent.com/Souravgoswami/cowspeak/master/cowspeak_files/cowspeak.1.gz', File.join(__dir__, 'cowspeak.1.gz') ]
 else
-	[ '/usr/share/cowspeak', 'https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/bin/cowspeak',
-	'https://raw.githubusercontent.com/Souravgoswami/cowspeak-deb/master/cowspeak/usr/share/man/man1/cowspeak.1.gz', '/usr/share/man/man1/cowspeak.1.gz' ]
+	[ '/usr/share/cowspeak', 'https://raw.githubusercontent.com/Souravgoswami/cowspeak-root/master/latest-src/usr/bin/cowspeak',
+	'https://github.com/Souravgoswami/cowspeak-root/raw/master/latest-src/usr/share/man/man1/cowspeak.1.gz', '/usr/share/man/man1/cowspeak.1.gz' ]
 end
 
 # Errors
@@ -129,8 +132,7 @@ help = ->(documentation = false) do
 			  --borderh=<ch>/-brh=<ch> 	Horizontal border character.
 			  --borderv=<ch>/-brv=<ch>	Vertical border character.
 			  --bubble=<text>/-bbl=<text> 	Specify the character of speech balloons.
-			  --documentation/-d        	Display the documentation.
-			  --download/-dl		Download missing files from Github.
+			  --documentation/-d        	Display the documentation.#{"\n  --download/-dl		Download missing files from Github." unless ROOT_DISABLE_DOWNLOAD}
 			  --file=<path>/-f=<path>	Specify the path of your own ASCII art.
 			  --fill=<char>/-fc=<char>	Fill the quote area with a character.
 			  --force-update/-fu		Forcefully update (also see --update)
@@ -367,7 +369,7 @@ if ARGV.include?('--update') || ARGV.include?('-u') || force_update
 	end
 end
 
-if ARGV.include?('--download') || ARGV.include?('-dl')
+if !ROOT_DISABLE_DOWNLOAD && (ARGV.include?('--download') || ARGV.include?('-dl'))
 	ARGV.delete('--download')
 	ARGV.delete('-dl')
 
@@ -472,15 +474,21 @@ begin
 
 	unless File.file?(file) || !show_art
 		colourize.call "Looks like the art file doesn't exist.\n"
-		colourize.call "Type #{BASENAME} --download or #{BASENAME} -dl to download all the necessary files.\n"
+
+		unless ROOT_DISABLE_DOWNLOAD
+			colourize.call "Type #{BASENAME} --download or #{BASENAME} -dl to download all the necessary files.\n"
+		else
+			colourize.call "Please make sure you have installed cowspeak correctly...\n"
+		end
+
 		colourize.call "Type #{BASENAME} --show-arts or #{BASENAME} -sa to see available arts in the default directory...\n"
 		colourize.call "Type #{BASENAME} --help or #{BASENAME} -h for help.\n"
 		colourize.call "Type #{BASENAME} --art or #{BASENAME} -a for help regarding art.\n"
 		print "\e[1m"
 		colourize.call "If you still want to run #{BASENAME} without the animals, use the -na or --no-art argument\n"
 		print "\e[0m"
-		file = File.join(PATH, "arts/#{%w(cow squirrels killer_squirrels cat deer dog mouse camel).sample}.art")
 
+		file = File.join(PATH, "arts/#{%w(cow squirrels killer_squirrels cat deer dog mouse camel).sample}.art")
 		unless File.readable?(file)
 			colourize.("The default files at location #{PATH + 'arts/'} doesn't exist\n")
 			colourize.("Please run #{BASENAME} -dl to download all the necessary files at #{PATH}\n")
@@ -524,7 +532,7 @@ begin
 			suffix = UNIT == 1000 ? 'MB' : 'MiB'
 			memory = IO.foreach('/proc/meminfo').first(3)
 
-			used = (((total = memory[0].split[1].to_f) - (available = memory[2].split[1].to_f))/UNIT).round(2)
+			used = (((total = memory[0].split[1].to_f) - (memory[2].split[1].to_f))/UNIT).round(2)
 			val = "\n:: Memory: #{(used).round(2)} #{suffix} / #{(total/UNIT).round(2)} #{suffix} (#{used.*(100)./(total./(UNIT)).round(2)}%)"
 		else
 			''
@@ -563,7 +571,7 @@ begin
 				previdle, idle = @prev_idle + @prev_iowait, @idle + @iowait
 				totald = idle + (@user + @nice + @sys + @irq + @softirq + @steal) -
 					(previdle + (@prev_user + @prev_nice + @prev_sys + @prev_irq + @prev_softirq + @prev_steal))
-				"#{((totald - (idle - previdle)) / totald * 100).round( x == 0 ? 2 : 0 ).abs.then { |x| x.to_s == 'NaN' ? 0 : x }.abs}%"
+				"#{((totald - (idle - previdle)) / totald * 100).round( x == 0 ? 2 : 0 ).abs.then { |y| y.to_s == 'NaN' ? 0 : y }.abs}%"
 			end
 
 			"\n:: Total CPU Usage: #{usages[0]}\n   [#{usages.drop(1).each_with_index { |x, i| x.prepend(%Q|C#{i + 1}: |) }.join(' | ')}]"
@@ -651,7 +659,7 @@ begin
 		EOF
 
 	else
-		t = ARGV.select { |t| t.start_with?('--text='.freeze) || t.start_with?('-t='.freeze) }.each(&ARGV.method(:delete))
+		t = ARGV.select { |x| x.start_with?('--text='.freeze) || x.start_with?('-t='.freeze) }.each(&ARGV.method(:delete))
 
 		text.replace(
 			if t.empty?
